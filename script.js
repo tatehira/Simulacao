@@ -25,11 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const handleCurrencyInput = (e) => {
         let value = e.target.value.replace(/\D/g, '');
-        value = (value / 100).toFixed(2) + '';
-        value = value.replace(".", ",");
-        value = value.replace(/(\d)(\d{3})(\d{3})/g, "$1.$2.$3");
-        value = value.replace(/(\d)(\d{3})/g, "$1.$2");
-        e.target.value = value;
+        if (value === '') {
+            e.target.value = '';
+            return;
+        }
+        const numericValue = parseInt(value) / 100;
+        e.target.value = new Intl.NumberFormat('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(numericValue);
     };
 
     inputValorBem.addEventListener('input', handleCurrencyInput);
