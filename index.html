@@ -711,7 +711,7 @@
                             <polyline points="23 4 23 10 17 10" />
                             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                         </svg>
-                        Buscar BCB
+                        Buscar Média de Juros (BCB)
                     </button>
                 </div>
                 <div class="taxa-row">
@@ -740,8 +740,9 @@
                     </div>
                 </div>
                 <div id="results-grid" class="r-grid"></div>
-                
-                <button id="btn-share" class="btn-bcb hidden" style="width: 100%; margin-top: 1.5rem; justify-content: center; padding: 10px; font-size: 0.85rem;">
+
+                <button id="btn-share" class="btn-bcb hidden"
+                    style="width: 100%; margin-top: 1.5rem; justify-content: center; padding: 10px; font-size: 0.85rem;">
                     <span>📸</span> Compartilhar Resultado (Imagem)
                 </button>
             </div>
@@ -778,7 +779,7 @@
 
             // PWA Service Worker Registration
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(function(err) {
+                navigator.serviceWorker.register('sw.js').catch(function (err) {
                     console.error('SW Error:', err);
                 });
             }
@@ -860,13 +861,13 @@
                 setTimeout(function () { resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
             });
 
-            btnShare.addEventListener('click', function() {
+            btnShare.addEventListener('click', function () {
                 html2canvas(resultsSection, {
                     backgroundColor: '#080d1c',
                     scale: 2,
                     useCORS: true,
                     logging: false
-                }).then(function(canvas) {
+                }).then(function (canvas) {
                     var link = document.createElement('a');
                     link.download = 'simulacao-tatehira-' + new Date().getTime() + '.png';
                     link.href = canvas.toDataURL('image/png');
