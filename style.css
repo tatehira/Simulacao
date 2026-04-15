@@ -358,8 +358,36 @@ input:focus, select:focus {
     border: 0;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem 0.75rem;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .input-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        padding: 0.9rem 1.1rem;
+        font-size: 1.1rem;
+    }
+
     .results-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
+    }
+
+    .installment-card {
+        padding: 1rem;
     }
 }

@@ -13,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#080d1c">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --accent: #2563eb;
@@ -737,6 +740,10 @@
                     </div>
                 </div>
                 <div id="results-grid" class="r-grid"></div>
+                
+                <button id="btn-share" class="btn-bcb hidden" style="width: 100%; margin-top: 1.5rem; justify-content: center; padding: 10px; font-size: 0.85rem;">
+                    <span>📸</span> Compartilhar Resultado (Imagem)
+                </button>
             </div>
         </section>
 
@@ -767,6 +774,14 @@
             var selectCond = get('condicao');
             var resultsSection = get('results-section');
             var resultsGrid = get('results-grid');
+            var btnShare = get('btn-share');
+
+            // PWA Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(function(err) {
+                    console.error('SW Error:', err);
+                });
+            }
 
             function fmt(v) {
                 return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
@@ -841,7 +856,22 @@
                 });
 
                 resultsSection.classList.remove('hidden');
+                btnShare.classList.remove('hidden');
                 setTimeout(function () { resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
+            });
+
+            btnShare.addEventListener('click', function() {
+                html2canvas(resultsSection, {
+                    backgroundColor: '#080d1c',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                }).then(function(canvas) {
+                    var link = document.createElement('a');
+                    link.download = 'simulacao-tatehira-' + new Date().getTime() + '.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
             });
         });
     </script>
