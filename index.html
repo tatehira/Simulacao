@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tatehira Sistemas | Simulador de Financiamento</title>
+    <meta name="description" content="Simulação realista de financiamento da Tatehira Sistemas com taxas atualizadas do Banco Central.">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <main class="container">
+        <header class="header">
+            <img src="logo.png" alt="Tatehira Sistemas" class="logo">
+            <h1>Tatehira Sistemas</h1>
+            <p>Simulador de Financiamento</p>
+        </header>
+
+        <section class="card simulator-card">
+            <div class="input-group">
+                <label for="tipo-veiculo">Tipo de Veículo</label>
+                <div class="segmented-control">
+                    <input type="radio" name="veiculo" id="carro" value="carro" checked>
+                    <label for="carro">Carro</label>
+                    <input type="radio" name="veiculo" id="moto" value="moto">
+                    <label for="moto">Moto</label>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group flex-2">
+                    <label for="valor-bem">Valor do Bem (R$)</label>
+                    <input type="text" id="valor-bem" placeholder="0,00" inputmode="numeric">
+                </div>
+                <div class="input-group flex-1">
+                    <label for="condicao">Condição</label>
+                    <select id="condicao">
+                        <option value="novo">Novo</option>
+                        <option value="usado">Usado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="valor-entrada">Valor de Entrada (R$)</label>
+                <input type="text" id="valor-entrada" placeholder="0,00" inputmode="numeric">
+            </div>
+
+            <div class="input-group">
+                <div class="label-with-action">
+                    <label for="taxa-juros">Taxa de Juros (<span id="taxa-periodo-label">mensal</span>)</label>
+                    <button id="fetch-rate" class="btn-text">Ver média BCB</button>
+                </div>
+                <div class="input-with-toggle">
+                    <input type="number" id="taxa-juros" step="0.01" placeholder="0,00">
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="toggle-anual">
+                        <label for="toggle-anual" data-off="Mês" data-on="Ano"></label>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-simular" class="btn-primary">Simular Financiamento</button>
+        </section>
+
+        <section id="results-section" class="results-section hidden">
+            <h2 class="section-title">Resultados da Simulação</h2>
+            <div id="results-grid" class="results-grid">
+                <!-- Parcelas serão inseridas aqui -->
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Dados de taxas obtidos via API do Banco Central (SGS).<br>A simulação utiliza o sistema Price.</p>
+        </footer>
+    </main>
+
+    <!-- Modal/Toast de loading -->
+    <div id="loader" class="loader-overlay hidden">
+        <div class="loader"></div>
+        <p>Buscando taxas atuais...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
