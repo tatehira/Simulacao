@@ -1,13 +1,13 @@
 :root {
     --primary: #3b82f6;
     --primary-hover: #2563eb;
-    --bg-light: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.82);
-    --text-main: #1e293b;
-    --text-muted: #64748b;
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
     --accent: #8b5cf6;
-    --glass-border: rgba(37, 99, 235, 0.1);
-    --input-bg: #ffffff;
+    --glass-border: rgba(148, 163, 184, 0.1);
+    --input-bg: rgba(15, 23, 42, 0.6);
 }
 
 * {
@@ -18,7 +18,7 @@
 }
 
 body {
-    background-color: var(--bg-light);
+    background-color: var(--bg-dark);
     color: var(--text-main);
     min-height: 100vh;
     display: flex;
@@ -32,7 +32,7 @@ body {
     right: -10%;
     width: 60%;
     height: 60%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 100%);
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.03) 50%, transparent 100%);
     z-index: -1;
     filter: blur(80px);
 }
@@ -80,11 +80,11 @@ body {
 
 .card {
     background: var(--card-bg);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.05), 0 20px 40px -10px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .input-group {
@@ -314,7 +314,7 @@ input:focus, select:focus {
 .loader-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(248, 250, 252, 0.85);
+    background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
