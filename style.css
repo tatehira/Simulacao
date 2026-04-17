@@ -1,13 +1,13 @@
 :root {
     --primary: #3b82f6;
     --primary-hover: #2563eb;
-    --bg-dark: #0f172a;
-    --card-bg: rgba(30, 41, 59, 0.7);
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
+    --bg-light: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.82);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
     --accent: #8b5cf6;
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --input-bg: rgba(15, 23, 42, 0.8);
+    --glass-border: rgba(37, 99, 235, 0.1);
+    --input-bg: #ffffff;
 }
 
 * {
@@ -18,7 +18,7 @@
 }
 
 body {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-light);
     color: var(--text-main);
     min-height: 100vh;
     display: flex;
@@ -84,7 +84,7 @@ body {
     border: 1px solid var(--glass-border);
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.05), 0 20px 40px -10px rgba(37, 99, 235, 0.1);
 }
 
 .input-group {
@@ -314,7 +314,7 @@ input:focus, select:focus {
 .loader-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(248, 250, 252, 0.85);
     backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;

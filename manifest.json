@@ -1,11 +1,11 @@
 {
-  "name": "Tatehira Simulador",
-  "short_name": "Tatehira",
+  "name": "Simulação Financiamento",
+  "short_name": "Simulação Financiamento",
   "description": "Simulador de Financiamento Automotivo com taxas atualizadas.",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#080d1c",
-  "theme_color": "#080d1c",
+  "background_color": "#f8fafc",
+  "theme_color": "#f8fafc",
   "orientation": "portrait",
   "icons": [
     {
