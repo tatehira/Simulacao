@@ -657,10 +657,65 @@
                 font-size: 1.5rem;
             }
         }
+        /* INSTALL BUTTON */
+        .pwa-install {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--accent);
+            padding: .8rem 1.4rem;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(59, 130, 246, 0.3);
+            z-index: 1000;
+            transition: transform .5s cubic-bezier(.175, .885, .32, 1.275), opacity .3s;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .pwa-install.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .pwa-install:hover {
+            background: var(--accent);
+            transform: translateX(-50%) translateY(-3px);
+        }
+
+        .pwa-install span {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .pwa-icon {
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1rem;
+        }
     </style>
 </head>
 
 <body>
+    <div id="pwa-install-btn" class="pwa-install">
+        <div class="pwa-icon">📥</div>
+        <span>Instalar Aplicativo</span>
+    </div>
     <div class="bg"></div>
     <div class="grid"></div>
     <div class="wrap">
@@ -774,9 +829,41 @@
             var resultsGrid = get('results-grid');
             var btnShare = get('btn-share');
 
-            // PWA Service Worker Registration
+            // PWA Logic
+            let deferredPrompt;
+            const installBtn = get('pwa-install-btn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent Chrome 67 and earlier from automatically showing the prompt
+                e.preventDefault();
+                // Stash the event so it can be triggered later.
+                deferredPrompt = e;
+                // Update UI notify the user they can add to home screen
+                installBtn.classList.add('visible');
+            });
+
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                // Show the prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                installBtn.classList.remove('visible');
+            });
+
+            window.addEventListener('appinstalled', (evt) => {
+                console.log('App installed');
+                installBtn.classList.remove('visible');
+            });
+
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(function (err) {
+                navigator.serviceWorker.register('sw.js').then(function(reg) {
+                    console.log('SW Registered', reg);
+                }).catch(function (err) {
                     console.error('SW Error:', err);
                 });
             }

@@ -1,8 +1,9 @@
 {
   "name": "Simulação Financiamento",
-  "short_name": "Simulação Financiamento",
+  "short_name": "Simulador",
   "description": "Simulador de Financiamento Automotivo com taxas atualizadas.",
   "start_url": "index.html",
+  "id": "simulador-financiamento",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
@@ -10,9 +11,15 @@
   "icons": [
     {
       "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ]
 }
