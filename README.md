@@ -1,33 +1,16 @@
-# Tatehira Sistemas - Simulador de Financiamento
+# React + Vite
 
-Simulador de financiamento automotivo (Carros e Motos) desenvolvido com foco em performance, responsividade e precisão de dados.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-##  Tecnologias Utilizadas
-- **HTML5 & CSS3**: Estrutura semântica e estilização premium com Glassmorphism.
-- **JavaScript (Vanilla)**: Lógica de cálculo e manipulação de DOM sem dependências externas.
-- **API Banco Central (SGS)**: Consumo de dados reais para taxas de juros atualizadas.
-- **Google Fonts (Outfit)**: Tipografia moderna.
+Currently, two official plugins are available:
 
-##  Funcionalidades
-- **Simulação Realista**: Valores baseados na Tabela Price.
-- **Dados Reais**: Busca automática da taxa média de juros de veículos via Banco Central.
-- **Ajuste de Condição**: Diferenciação inteligente de taxas para veículos Novos vs. Usados.
-- **Responsividade**: Experiência mobile-first completa.
-- **Personalização**: Suporte para Carros (até 60x) e Motos (até 48x).
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-##  Como Executar
-1. Clone ou baixe este repositório.
-2. Abra o arquivo `index.html` em qualquer navegador moderno.
-3. Não requer instalação ou servidor backend.
+## React Compiler
 
-##  Regras de Negócio
-- **Taxa Mensal**: Obtida via API BCB (Série 25471).
-- **Spread**:
-  - Novo: Média BCB * 0.9 (estimativa de taxa preferencial).
-  - Usado: Média BCB * 1.5 (estimativa de taxa de mercado para usados).
-- **Parcelamento**:
-  - Carro: 12x, 24x, 36x, 48x, 60x.
-  - Moto: 12x, 24x, 36x, 48x.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
----
-Desenvolvido por **Tatehira Sistemas**.
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
