@@ -728,6 +728,16 @@
 
         <section class="card">
             <div class="field">
+                <label>Tipo de Simulação</label>
+                <div class="seg">
+                    <input type="radio" name="tipo-simulacao" id="sim-veiculo" value="veiculo" checked>
+                    <label for="sim-veiculo">Veículo</label>
+                    <input type="radio" name="tipo-simulacao" id="sim-consignado" value="consignado">
+                    <label for="sim-consignado">Consignado</label>
+                </div>
+            </div>
+            
+            <div class="field" id="campo-tipo-veiculo">
                 <label>Tipo de Veículo</label>
                 <div class="seg">
                     <input type="radio" name="veiculo" id="carro" value="carro" checked>
@@ -738,18 +748,28 @@
             </div>
             <div class="field-row">
                 <div>
-                    <label for="valor-bem">Valor do Bem (R$)</label>
+                    <label id="label-valor-principal" for="valor-bem">Valor do Bem (R$)</label>
                     <input type="text" id="valor-bem" placeholder="0,00" inputmode="numeric">
                 </div>
-                <div>
+                <div id="campo-condicao">
                     <label for="condicao">Condição</label>
                     <select id="condicao">
                         <option value="novo">Novo</option>
                         <option value="usado">Usado</option>
                     </select>
                 </div>
+                <div id="campo-banco" class="hidden">
+                    <label for="banco">Banco</label>
+                    <select id="banco">
+                        <option value="bb">Banco do Brasil</option>
+                        <option value="caixa">Caixa Econômica</option>
+                        <option value="bradesco">Bradesco</option>
+                        <option value="itau">Itaú</option>
+                        <option value="santander">Santander</option>
+                    </select>
+                </div>
             </div>
-            <div class="field">
+            <div class="field" id="campo-entrada">
                 <label for="valor-entrada">Entrada (R$)</label>
                 <input type="text" id="valor-entrada" placeholder="0,00" inputmode="numeric">
             </div>
@@ -763,7 +783,7 @@
                             <polyline points="23 4 23 10 17 10" />
                             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                         </svg>
-                        Buscar Média de Juros (BCB)
+                        <span id="fetch-rate-text">Buscar Média de Juros (BCB)</span>
                     </button>
                 </div>
                 <div class="taxa-row">
@@ -783,7 +803,7 @@
                 </div>
                 <div class="r-summary">
                     <div class="s-item">
-                        <div class="sl">Financiado</div>
+                        <div class="sl" id="s-label-financiado">Financiado</div>
                         <div class="sv" id="s-financiado">—</div>
                     </div>
                     <div class="s-item">

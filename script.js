@@ -11,6 +11,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
     const selectCondicao = document.getElementById('condicao');
 
+    // Novos elementos
+    const simVeiculo = document.getElementById('sim-veiculo');
+    const simConsignado = document.getElementById('sim-consignado');
+    const campoTipoVeiculo = document.getElementById('campo-tipo-veiculo');
+    const campoCondicao = document.getElementById('campo-condicao');
+    const campoBanco = document.getElementById('campo-banco');
+    const campoEntrada = document.getElementById('campo-entrada');
+    const labelValorPrincipal = document.getElementById('label-valor-principal');
+    const fetchRateText = document.getElementById('fetch-rate-text');
+    const selectBanco = document.getElementById('banco');
+    
+    const sFinanciado = document.getElementById('s-financiado');
+    const sTaxa = document.getElementById('s-taxa');
+    const sLabelFinanciado = document.getElementById('s-label-financiado');
+
+    // --- Alternar Tipo de Simulação ---
+    const toggleSimulacao = () => {
+        if (simConsignado.checked) {
+            campoTipoVeiculo.classList.add('hidden');
+            campoCondicao.classList.add('hidden');
+            campoEntrada.classList.add('hidden');
+            campoBanco.classList.remove('hidden');
+            labelValorPrincipal.textContent = 'Valor do Empréstimo (R$)';
+            fetchRateText.textContent = 'Buscar Média do Banco';
+            sLabelFinanciado.textContent = 'Empréstimo';
+            inputEntrada.value = ''; // Limpa entrada
+        } else {
+            campoTipoVeiculo.classList.remove('hidden');
+            campoCondicao.classList.remove('hidden');
+            campoEntrada.classList.remove('hidden');
+            campoBanco.classList.add('hidden');
+            labelValorPrincipal.textContent = 'Valor do Bem (R$)';
+            fetchRateText.textContent = 'Buscar Média de Juros (BCB)';
+            sLabelFinanciado.textContent = 'Financiado';
+        }
+    };
+
+    simVeiculo.addEventListener('change', toggleSimulacao);
+    simConsignado.addEventListener('change', toggleSimulacao);
+
     // --- Máscaras e Formatação ---
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('pt-BR', {
@@ -47,28 +87,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchBCBRate = async () => {
         loader.classList.remove('hidden');
         try {
-            // Série 25471: Taxa média mensal de juros - PF - Veículos
-            const response = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.25471/dados/ultimos/1?formato=json');
-            const data = await response.json();
-            
-            if (data && data.length > 0) {
-                let rate = parseFloat(data[0].valor);
+            if (simConsignado.checked) {
+                // Simulação de taxas médias (fictícias baseadas no mercado atual) para Consignado Público (Mensal)
+                const taxasConsignado = {
+                    'bb': 1.45,
+                    'caixa': 1.40,
+                    'bradesco': 1.55,
+                    'itau': 1.52,
+                    'santander': 1.48
+                };
                 
-                // Ajuste realista conforme solicitado: Novo ~1.8, Usado ~3.0
-                // Se a média do BCB vier, vamos considerar que ela é a base.
-                // Usaremos um fator de ajuste baseado na condição selecionada.
-                const condicao = selectCondicao.value;
-                if (condicao === 'novo') {
-                    rate = rate * 0.9; // Um pouco abaixo da média
-                } else {
-                    rate = rate * 1.5; // Bem acima da média
-                }
-
+                await new Promise(r => setTimeout(r, 600)); // Simular delay de API
+                let rate = taxasConsignado[selectBanco.value];
+                
                 inputTaxa.value = rate.toFixed(2);
                 if (toggleAnual.checked) {
-                    // Converter mensal para anual: (1 + i)^12 - 1
                     const anual = (Math.pow(1 + (rate / 100), 12) - 1) * 100;
                     inputTaxa.value = anual.toFixed(2);
+                }
+            } else {
+                // Série 25471: Taxa média mensal de juros - PF - Veículos
+                const response = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.25471/dados/ultimos/1?formato=json');
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    let rate = parseFloat(data[0].valor);
+                    
+                    const condicao = selectCondicao.value;
+                    if (condicao === 'novo') {
+                        rate = rate * 0.9;
+                    } else {
+                        rate = rate * 1.5;
+                    }
+
+                    inputTaxa.value = rate.toFixed(2);
+                    if (toggleAnual.checked) {
+                        const anual = (Math.pow(1 + (rate / 100), 12) - 1) * 100;
+                        inputTaxa.value = anual.toFixed(2);
+                    }
                 }
             }
         } catch (error) {
@@ -89,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const simulate = () => {
         const valorBem = parseCurrency(inputValorBem.value);
-        const entrada = parseCurrency(inputEntrada.value);
+        const entrada = simConsignado.checked ? 0 : parseCurrency(inputEntrada.value);
         const principal = valorBem - entrada;
         
         if (principal <= 0) {
-            alert('A entrada não pode ser maior ou igual ao valor do bem.');
+            alert(simConsignado.checked ? 'O valor do empréstimo deve ser maior que zero.' : 'A entrada não pode ser maior ou igual ao valor do bem.');
             return;
         }
 
@@ -109,9 +165,17 @@ document.addEventListener('DOMContentLoaded', () => {
             monthlyRate = Math.pow(1 + taxaInput, 1/12) - 1;
         }
 
-        const isCarro = document.getElementById('carro').checked;
-        const maxMonths = isCarro ? 60 : 48;
-        const monthSteps = [12, 24, 36, 48, 60].filter(m => m <= maxMonths);
+        let maxMonths;
+        let monthSteps;
+
+        if (simConsignado.checked) {
+            maxMonths = 96; // Máximo comum para servidor público
+            monthSteps = [24, 36, 48, 60, 72, 84, 96].filter(m => m <= maxMonths);
+        } else {
+            const isCarro = document.getElementById('carro').checked;
+            maxMonths = isCarro ? 60 : 48;
+            monthSteps = [12, 24, 36, 48, 60].filter(m => m <= maxMonths);
+        }
 
         resultsGrid.innerHTML = '';
         
@@ -120,12 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const card = document.createElement('div');
             card.className = 'installment-card';
+            // ic is the class used in CSS for styling the cards properly
             card.innerHTML = `
-                <span class="inst-mes">${months} meses</span>
-                <span class="inst-valor">${formatCurrency(pmt)}</span>
+                <div class="ic">
+                    <div class="im">${months}x</div>
+                    <div class="iv">${formatCurrency(pmt)}</div>
+                </div>
             `;
             resultsGrid.appendChild(card);
         });
+
+        sFinanciado.textContent = formatCurrency(principal);
+        sTaxa.textContent = (monthlyRate * 100).toFixed(2) + '% a.m.';
 
         resultsSection.classList.remove('hidden');
         resultsSection.scrollIntoView({ behavior: 'smooth' });
