@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchRateText.textContent = 'Buscar Média de Juros (BCB)';
             sLabelFinanciado.textContent = 'Financiado';
         }
+        
+        // Dispara a busca da taxa automaticamente ao trocar o tipo
+        fetchBCBRate();
     };
 
     simVeiculo.addEventListener('change', toggleSimulacao);
@@ -136,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     btnFetch.addEventListener('click', fetchBCBRate);
+    selectBanco.addEventListener('change', fetchBCBRate);
+    selectCondicao.addEventListener('change', fetchBCBRate);
 
     // --- Simulação ---
     const calculatePrice = (principal, monthlyRate, months) => {
