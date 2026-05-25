@@ -9,7 +9,10 @@ import {
   CheckCircle,
   Building,
   CreditCard,
-  Coins
+  Coins,
+  Download,
+  Smartphone,
+  X
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
@@ -35,8 +38,51 @@ export default function App() {
   const [summary, setSummary] = useState({ principal: 0, monthlyRate: 0 });
   const [copied, setCopied] = useState(false);
   
+  // PWA & Install State
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBtn, setShowInstallBtn] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+  
   const resultsRef = useRef(null);
   const cardRef = useRef(null);
+
+  // --- Efeito para Gerenciamento de Instalação (PWA) ---
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBtn(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Detecção de iOS e Standalone
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const ios = /iphone|ipad|ipod/.test(userAgent);
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    setIsIOS(ios);
+
+    if (ios && !isStandalone) {
+      setShowInstallBtn(true);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (isIOS) {
+      setShowIOSInstructions(true);
+    } else if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Escolha de instalação PWA: ${outcome}`);
+      setDeferredPrompt(null);
+      setShowInstallBtn(false);
+    }
+  };
 
   // --- Máscaras e Formatação ---
   const formatBRL = (value) => {
@@ -190,9 +236,13 @@ export default function App() {
 
     const simulationResults = monthsList.map(months => {
       const pmt = calculatePrice(principal, monthlyRate, months);
+      const totalPago = pmt * months;
+      const totalJuros = totalPago - principal;
       return {
         months,
-        value: pmt
+        value: pmt,
+        totalPago,
+        totalJuros
       };
     });
 
@@ -247,6 +297,59 @@ export default function App() {
   return (
     <>
       <div className="grid-overlay"></div>
+      
+      {showInstallBtn && (
+        <div className="install-banner">
+          <div className="install-banner-body">
+            <Smartphone className="install-banner-icon" size={20} />
+            <div className="install-banner-info">
+              <span className="install-banner-title">Simulador no seu celular</span>
+              <span className="install-banner-desc">Instale o app para simular rápido e offline.</span>
+            </div>
+            <button type="button" className="btn-install-confirm" onClick={handleInstallClick}>
+              Instalar
+            </button>
+            <button type="button" className="btn-install-dismiss" onClick={() => setShowInstallBtn(false)} aria-label="Fechar banner">
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showIOSInstructions && (
+        <div className="ios-modal-overlay" onClick={() => setShowIOSInstructions(false)}>
+          <div className="ios-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ios-modal-header">
+              <h3>Instalar no iPhone / iPad</h3>
+              <button type="button" className="btn-ios-close" onClick={() => setShowIOSInstructions(false)} aria-label="Fechar">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="ios-modal-body">
+              <p>Adicione o <strong>Simulador Tatehira</strong> à sua tela de início:</p>
+              
+              <div className="ios-step">
+                <span className="step-num">1</span>
+                <span className="step-text">
+                  Toque no ícone de compartilhar <Share2 size={16} className="inline-icon" /> na barra do navegador Safari.
+                </span>
+              </div>
+              
+              <div className="ios-step">
+                <span className="step-num">2</span>
+                <span className="step-text">
+                  Role o menu e selecione a opção <strong>"Adicionar à Tela de Início"</strong>.
+                </span>
+              </div>
+              
+              <button type="button" className="btn-ios-ok" onClick={() => setShowIOSInstructions(false)}>
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="app-container" ref={cardRef}>
         
         {/* Header */}
@@ -476,6 +579,16 @@ export default function App() {
                   <div className="installment-card" key={i}>
                     <div className="installment-months">{r.months} parcelas</div>
                     <div className="installment-value">{formatBRL(r.value)}</div>
+                    <div className="installment-details">
+                      <div className="detail-row">
+                        <span className="detail-label">Juros</span>
+                        <span className="detail-value text-accent">{formatBRL(r.totalJuros)}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Total</span>
+                        <span className="detail-value">{formatBRL(r.totalPago)}</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
