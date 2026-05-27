@@ -1,13 +1,19 @@
 {
   "name": "Simulador de Crédito Tatehira",
   "short_name": "Simulador Tatehira",
-  "description": "Simulador de Crédito para Financiamento Automotivo e Consignado",
-  "start_url": "/Simulacao/",
+  "description": "Simulador de Crédito e Financiamento Automotivo",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#0b0f19",
-  "theme_color": "#3b82f6",
+  "theme_color": "#0b0f19",
   "orientation": "portrait",
   "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
     {
       "src": "icon-192.png",
       "sizes": "192x192",

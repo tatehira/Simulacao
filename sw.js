@@ -1,41 +1,50 @@
 const CACHE_NAME = 'simulador-tatehira-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './favicon.svg',
+  './icons.svg'
+];
 
 self.addEventListener('install', (e) => {
-  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    }).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(clients.claim());
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener('fetch', (e) => {
-  // Apenas cachear requisições GET para a mesma origem
-  if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) {
-    return;
-  }
-  
-  e.respondWith(
-    caches.match(e.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Retorna o cacheado, mas busca uma versão atualizada em background
-        fetch(e.request).then((networkResponse) => {
-          if (networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, networkResponse));
-          }
-        }).catch(err => console.log('SW fetch update failed:', err));
-        return cachedResponse;
-      }
-
-      return fetch(e.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
+  if (e.request.url.startsWith(self.location.origin)) {
+    e.respondWith(
+      caches.match(e.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          // Atualiza o cache em segundo plano (Stale-While-Revalidate)
+          fetch(e.request).then((networkResponse) => {
+            if (networkResponse.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => cache.put(e.request, networkResponse));
+            }
+          }).catch(() => {/* Silenciar offline */});
+          return cachedResponse;
         }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(e.request, responseToCache);
-        });
-        return networkResponse;
-      });
-    })
-  );
+        return fetch(e.request);
+      })
+    );
+  } else {
+    e.respondWith(fetch(e.request));
+  }
 });
