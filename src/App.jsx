@@ -228,7 +228,7 @@ export default function App() {
 
     let monthsList = [];
     if (simType === 'consignado') {
-      monthsList = [24, 36, 48, 60, 72, 84, 96];
+      monthsList = [12, 24, 36, 48, 60, 72, 84, 96];
     } else {
       const maxMonths = veiculoType === 'carro' ? 60 : 48;
       monthsList = [12, 24, 36, 48, 60].filter(m => m <= maxMonths);
@@ -299,21 +299,15 @@ export default function App() {
       <div className="grid-overlay"></div>
       
       {showInstallBtn && (
-        <div className="install-banner">
-          <div className="install-banner-body">
-            <Smartphone className="install-banner-icon" size={20} />
-            <div className="install-banner-info">
-              <span className="install-banner-title">Simulador no seu celular</span>
-              <span className="install-banner-desc">Instale o app para simular rápido e offline.</span>
-            </div>
-            <button type="button" className="btn-install-confirm" onClick={handleInstallClick}>
-              Instalar
-            </button>
-            <button type="button" className="btn-install-dismiss" onClick={() => setShowInstallBtn(false)} aria-label="Fechar banner">
-              <X size={16} />
-            </button>
-          </div>
-        </div>
+        <button 
+          type="button" 
+          className="pwa-install-fab" 
+          onClick={handleInstallClick}
+          aria-label="Instalar aplicativo"
+        >
+          <Download size={18} />
+          Instalar App
+        </button>
       )}
 
       {showIOSInstructions && (
@@ -499,7 +493,7 @@ export default function App() {
                 disabled={loading}
               >
                 <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
-                {simType === 'consignado' ? 'Atualizar Taxa Banco' : 'Buscar Juros BCB'}
+                Atualizar
               </button>
             </div>
             
